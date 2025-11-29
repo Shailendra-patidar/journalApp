@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,10 @@ public class JournalEntryService {
         try {
             User user = userService.findByUserName(userName);
             journalEntry.setDate(LocalDateTime.now());
+            journalEntry.setUser(user);
+            if(user.getJournalEntries() == null){
+                user.setJournalEntries(new ArrayList<>());
+            }
             JournalEntry saved = journalEntryRepo.save(journalEntry);
             user.getJournalEntries().add(saved);
             userService.saveUser(user);
@@ -53,7 +58,7 @@ public class JournalEntryService {
             User user = userService.findByUserName(userName);
             removed = user.getJournalEntries().removeIf(x -> x.getId().equals(id));
             if(removed){
-                userService.saveNewUser(user);
+                userService.saveUser(user);
                 journalEntryRepo.deleteById(id);
             }
         } catch (Exception e){

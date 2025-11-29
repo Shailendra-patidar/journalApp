@@ -1,7 +1,10 @@
 package com.InnoMinds.journalApp.controller;
 
+import com.InnoMinds.journalApp.api.response.WeatherResponse;
 import com.InnoMinds.journalApp.entity.User;
 import com.InnoMinds.journalApp.service.UserService;
+import com.InnoMinds.journalApp.service.WeatherService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private WeatherService weatherService;
+
 
     @PutMapping()
     public ResponseEntity<?> updateUser(@RequestBody User user){
@@ -28,11 +34,24 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
+    @DeleteMapping()
     public ResponseEntity<?> deleteByUserName(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userService.deleteByUserName(authentication.getName());
+        String userName = authentication.getName();
+        User user = userService.findByUserName(userName);
+        userService.deleteUser(user);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> greeting(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        WeatherResponse weatherResponse = weatherService.getWeather("Mumbai");
+        String greeting = "";
+        if(weatherResponse!=null){
+            greeting = " Weather feels like "+ weatherResponse.getCurrent().getFeelslike();
+        }
+        return new ResponseEntity<>("Hi "+ authentication.getName() + greeting, HttpStatus.OK);
     }
 
 }
