@@ -28,6 +28,7 @@ public class SpringSecurity {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/journal/**","/user/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll())
                         .httpBasic(withDefaults());
         http.userDetailsService(userDetailsService);

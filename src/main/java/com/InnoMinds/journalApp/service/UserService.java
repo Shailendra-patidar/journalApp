@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,6 +26,12 @@ public class UserService {
         userRepo.save(user);
     }
 
+    public void saveAdmin(User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Arrays.asList("USER","ADMIN"));
+        userRepo.save(user);
+    }
+
     public void saveUser(User user){
         userRepo.save(user);
     }
@@ -31,17 +39,16 @@ public class UserService {
         return userRepo.findById(id);
     }
 
-    public void deleteById(ObjectId id) {
-        userRepo.deleteById(id);
+
+
+    public  void deleteUser(User user){
+        userRepo.delete(user);
     }
-
-    public void deleteByUserName(String username){
-         userRepo.deleteByUserName(username);
-    }
-
-
    public User findByUserName(String username){
         return userRepo.findByUserName(username);
     }
 
+    public List<User> getAll() {
+        return userRepo.findAll();
+    }
 }

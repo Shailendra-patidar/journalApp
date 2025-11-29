@@ -41,7 +41,7 @@ public class JournalEntryController {
     }
 
 
-    @PostMapping
+    @PostMapping("/create-journal")
     public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry){
        try {
            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

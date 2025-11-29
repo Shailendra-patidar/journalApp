@@ -2,6 +2,7 @@ package com.InnoMinds.journalApp.controller;
 
 import com.InnoMinds.journalApp.entity.User;
 import com.InnoMinds.journalApp.service.UserService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +29,14 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping
+    @DeleteMapping()
     public ResponseEntity<?> deleteByUserName(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userService.deleteByUserName(authentication.getName());
+        String userName = authentication.getName();
+        User user = userService.findByUserName(userName);
+        userService.deleteUser(user);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 
 }

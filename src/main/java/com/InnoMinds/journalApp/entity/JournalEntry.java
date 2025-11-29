@@ -24,6 +24,4 @@ public class JournalEntry {
     private String content;
     private LocalDateTime date;
 
-    @JsonIgnore
-    private User user;
 }
